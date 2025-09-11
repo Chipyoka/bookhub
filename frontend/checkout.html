@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/styles.css">
+    <title>Bookhub | Cart & Checkout</title>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="flex">
+            <h1>Bookhub</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="cart.html">Cart</a>
+            </nav>
+        </div>
+        <div>
+            <a href="#">Cart icon</a>
+            <a href="#">Account icon</a>
+            <button>Register</button>
+        </div>
+    </header>
+
+    <!-- Cart Section -->
+    <main class="cart-page">
+        <section class="cart-items">
+            <h2>Your Cart</h2>
+            <!-- Example cart list placeholder -->
+            <div class="cart-list">
+                <div class="cart-item">
+                    <span class="book-title">Sample Book Title</span>
+                    <span class="book-qty">Qty: 1</span>
+                    <span class="book-price">$20.00</span>
+                </div>
+                <!-- Additional items will appear here -->
+            </div>
+            <div class="cart-summary">
+                <p>Total: <strong>$20.00</strong></p>
+            </div>
+        </section>
+
+        <!-- Checkout Section -->
+        <section class="checkout-form">
+            <h2>Checkout</h2>
+            <form action="#" method="post">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe">
+
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="john@example.com">
+
+                <label for="address">Shipping Address</label>
+                <textarea id="address" name="address" rows="3" placeholder="123 Main St"></textarea>
+
+                <label for="payment">Payment Method</label>
+                <select id="payment" name="payment">
+                    <option value="">--Select--</option>
+                    <option value="card">Credit/Debit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="cod">Cash on Delivery</option>
+                </select>
+
+                <button type="submit" class="btn-checkout">Place Order</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        This will be the footer
+    </footer>
+</body>
+</html>
