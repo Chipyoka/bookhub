@@ -1,0 +1,18 @@
+# runtime files
+backend/node_modules/
+backend/src/config/seedAdmin.js
+
+# Build files
+
+
+# Configurations
+backend/.env
+.env
+.local.env
+.production.env
+
+
+# Others
+*.zip
+*.txt
+NOTES.md
