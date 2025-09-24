@@ -7,33 +7,56 @@
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
 <body>
-  <header>
+     <!-- Header secction -->
+    <div class="top">
+        <div class="flex-2">
+            <div class="breathing-pulse"></div>
+            <p id="typewrite">The best of christianity books - all here !</p>
+            <div class="breathing-pulse"></div>
+        </div>
+    </div>
+    <header>
     <div class="flex">
-      <h1>Bookhub</h1>
-      <nav>
+        <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
+        <nav>
         <a href="index.html">Home</a>
-        <a href="all-books.html">Books</a>
-      </nav>
+        <a href="products.html">Books</a>
+        </nav>
     </div>
 
+    <!-- Search Field -->
     <div class="search-box">
-      <form id="search-form">
-        <input type="text" id="search-input" placeholder="Search books..." required />
-        <button type="submit">Search</button>
-      </form>
+        <form id="search-form" class="search-form">
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Search books..."
+            required
+        />
+        <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
+        </form>
     </div>
 
-    <div>
-      <a href="checkout.html">Cart icon</a>
-      <a href="#">Account icon</a>
-      <button>Register</button>
+    <div class="cta">
+        <div>
+
+            <button>
+                <a href="checkout.html"><img src="./images/cart_.png" alt="cart" width="28px"></a>
+            </button>
+            <button>
+                <a href="checkout.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
+            </button>
+        </div>
+        <button>Register</button>
     </div>
-  </header>
+    </header>
 
   <main>
     <h2>Search Results</h2>
-    <div class="books" id="results-container">
+    <div class="container">
+        <div class="books" id="results-container">
       <!-- Search results will appear here -->
+    </div>
     </div>
   </main>
 
@@ -41,70 +64,6 @@
     &copy; <span id="year"></span> Bookhub. All rights reserved.
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Extract query from URL
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('q');
-
-    const resultsContainer = document.getElementById('results-container');
-
-    async function fetchSearchResults() {
-      if (!query) {
-        resultsContainer.innerHTML = '<p>No search query provided.</p>';
-        return;
-      }
-
-      try {
-        // Call backend endpoint with search param
-        const res = await fetch(`http://localhost:5000/api/books/search?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
-
-        if (!data.success || !data.data.length) {
-          resultsContainer.innerHTML = `<p>No results found for "<strong>${query}</strong>".</p>`;
-          return;
-        }
-
-        // Render matching books
-        data.data.forEach(book => {
-          const price = Number(book.price);
-          const formattedPrice = isNaN(price) ? book.price : price.toFixed(2);
-          const bookCard = document.createElement('div');
-          bookCard.className = 'book-card';
-          bookCard.innerHTML = `
-            <div class="image-container">
-              <img src="${book.image_url}" alt="${book.title}" class="book-image">
-            </div>
-            <div class="book-info">
-              <h3>${book.title}</h3>
-              <p class="author">By ${book.author}</p>
-              <p class="price">K${formattedPrice}</p>
-              <button onclick="viewBook(${book.id})">View Details</button>
-            </div>
-          `;
-          resultsContainer.appendChild(bookCard);
-        });
-      } catch (err) {
-        console.error(err);
-        resultsContainer.innerHTML = '<p>Error retrieving search results.</p>';
-      }
-    }
-
-    function viewBook(id) {
-      window.location.href = `view-details.html?id=${id}`;
-    }
-
-    // Reuse header search on results page
-    document.getElementById('search-form').addEventListener('submit', e => {
-      e.preventDefault();
-      const newQuery = document.getElementById('search-input').value.trim();
-      if (newQuery) {
-        window.location.href = `search-results.html?q=${encodeURIComponent(newQuery)}`;
-      }
-    });
-
-    fetchSearchResults();
-  </script>
+<script type="module" src="./js/search.js" ></script>
 </body>
 </html>

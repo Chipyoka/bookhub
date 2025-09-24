@@ -128,6 +128,36 @@ router.get('/best-sellers', async (req, res) => {
 });
 
 
+// GET /api/books/search?q=keyword
+router.get('/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+
+    if (!q) return res.json({ success: true, data: [] });
+
+    // Replace spaces with '+' for boolean mode search
+    const searchQuery = q
+      .split(/\s+/)
+      .map(word => `+${word}*`)
+      .join(' ');
+
+    const [rows] = await pool.query(
+      `
+      SELECT *, MATCH(title, author, description) AGAINST (? IN BOOLEAN MODE) AS relevance
+      FROM books
+      WHERE MATCH(title, author, description) AGAINST (? IN BOOLEAN MODE)
+      ORDER BY relevance DESC, created_at DESC
+      LIMIT 10
+      `,
+      [searchQuery, searchQuery]
+    );
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    console.error('Advanced search error:', err.message);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 /**
  * GET /books/:id
@@ -147,17 +177,6 @@ router.get('/:id', async (req, res) => {
     console.error('Error fetching book by ID:', err.message);
     res.status(500).json({ success: false, message: 'Server error' });
   }
-});
-
-
-// GET /api/books/search?q=keyword
-router.get('/search', async (req, res) => {
-  const q = req.query.q || '';
-  const [rows] = await pool.query(
-    `SELECT * FROM books WHERE title LIKE ? OR author LIKE ? ORDER BY created_at DESC`,
-    [`%${q}%`, `%${q}%`]
-  );
-  res.json({ success: true, data: rows });
 });
 
 
