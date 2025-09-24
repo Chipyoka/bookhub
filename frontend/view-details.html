@@ -8,24 +8,48 @@
 </head>
 <body>
   <!-- Header -->
-        <!-- Header secction -->
+    <!-- Header secction -->
+    <div class="top">
+        <div class="flex-2">
+            <div class="breathing-pulse"></div>
+            <p id="typewrite">The best of christianity books - all here !</p>
+            <div class="breathing-pulse"></div>
+        </div>
+    </div>
     <header>
-        <div class="flex">
-            <h1>Bookhub</h1>
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="products.html">Books</a>
-            </nav>
-        </div>
-        <div>
-            <!-- add search book field -->
-        </div>
-        <div>
-            <a href="checkout.html">Cart icon</a>
-            <a href="#">Account icon</a>
+    <div class="flex">
+        <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
+        <nav>
+        <a href="index.html">Home</a>
+        <a class="active-nav" href="all-books.html">Books</a>
+        </nav>
+    </div>
 
-            <button>Register</button>
+    <!-- 🔍 Search Field -->
+    <div class="search-box">
+        <form id="search-form" class="search-form">
+        <input
+            type="text"
+            id="search-input"
+            placeholder="Search books..."
+            required
+        />
+        <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
+        </form>
+    </div>
+
+    <div class="cta">
+        <div>
+
+            <button>
+                <a href="checkout.html"><img src="./images/cart_.png" alt="cart" width="28px"></a>
+            </button>
+            <button>
+                <a href="checkout.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
+            </button>
         </div>
+        <button>Register</button>
+    </div>
     </header>
 
 

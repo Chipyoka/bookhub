@@ -1,6 +1,7 @@
 import { initBookDetails } from './bookDetails.js';
 
-// Initialize the book details functionality
+
+// Initialize imports
 initBookDetails();
 
 const booksContainer = document.querySelector('.books');
