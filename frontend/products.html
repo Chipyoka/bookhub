@@ -8,21 +8,37 @@
 </head>
 <body>
         <!-- Header secction -->
-    <header>
-        <div class="flex">
-            <h1>Bookhub</h1>
-            <nav>
-                <a href="index.html">Home</a>
-                <a href="#">Books</a>
-            </nav>
-        </div>
-        <div>
-            <a href="checkout.html">Cart icon</a>
-            <a href="#">Account icon</a>
+<header>
+  <div class="flex">
+    <h1>Bookhub</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="all-books.html">Books</a>
+    </nav>
+  </div>
 
-            <button>Register</button>
-        </div>
-    </header>
+  <!-- 🔍 Search Field -->
+  <div class="search-box">
+    <form id="search-form">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search books..."
+        required
+      />
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div>
+    <a href="checkout.html">Cart icon</a>
+    <a href="#">Account icon</a>
+    <button>Register</button>
+  </div>
+</header>
+
+
+
 
     <!-- all books -->
      <section class="all-books">
@@ -34,9 +50,17 @@
         </div>
      </section>
 
+     <!-- section for pagenation -->
+      <div class="pagination-container">
+        <div class="pagination"></div>
+      </div>
+
      <!-- Footer -->
     <footer>
         This will be the footer
     </footer>
+
+    <script src="./js/main.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookhub | Book Details</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+        <!-- Header secction -->
+    <header>
+        <div class="flex">
+            <h1>Bookhub</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="#">Books</a>
+            </nav>
+        </div>
+        <div>
+            <!-- add search book field -->
+        </div>
+        <div>
+            <a href="checkout.html">Cart icon</a>
+            <a href="#">Account icon</a>
+
+            <button>Register</button>
+        </div>
+    </header>
+
+
+  <!-- Book Detail Section -->
+  <main class="book-details">
+    <div class="details-container">
+      <div class="image-section">
+        <img id="book-image" src="" alt="Book Cover">
+      </div>
+      <div class="info-section">
+        <h2 id="book-title">Loading...</h2>
+        <p class="author"><strong>Author:</strong> <span id="book-author"></span></p>
+        <p class="price"><strong>Price:</strong> K<span id="book-price"></span></p>
+        <p class="description" id="book-description"></p>
+        <button id="back-to-list" >Back to Listing</button>
+        <button id="add-to-cart">Add to cart</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; <span id="year"></span> Bookhub. All rights reserved.
+  </footer>
+
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

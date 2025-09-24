@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
       priceMin,
       priceMax,
       page = 1,
-      limit = 10,
+      limit = 8,
     } = req.query;
 
     let query = 'SELECT * FROM books WHERE 1=1';
@@ -116,5 +116,17 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
+
+
+// GET /api/books/search?q=keyword
+router.get('/search', async (req, res) => {
+  const q = req.query.q || '';
+  const [rows] = await pool.query(
+    `SELECT * FROM books WHERE title LIKE ? OR author LIKE ? ORDER BY created_at DESC`,
+    [`%${q}%`, `%${q}%`]
+  );
+  res.json({ success: true, data: rows });
+});
+
 
 export default router;
