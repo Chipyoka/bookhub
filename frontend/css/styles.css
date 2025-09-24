@@ -79,15 +79,7 @@ main h2 {
     align-items: top;
     padding: 1em 0em;
 }
-.filters{
-    width: 10%;
-    background: #f3f3f3;
-    height: 60dvh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1em 2em;
-}
+
 
 
 /* ===========================
@@ -310,7 +302,7 @@ footer{
       padding: 1em;
     }
     .image-section img {
-      max-width: 280px;
+      max-height: 280px;
       width: 100%;
       background-color: var(--white);
     }
@@ -339,3 +331,50 @@ footer{
       border-radius: 4px;
       cursor: pointer;
     }
+
+.filters{
+    width: 12%;
+    background: #f3f3f3;
+    height: 60dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start;
+    padding: .5em 1em;
+    color: #353535;
+}
+.category-tabs {
+
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+color: #353535;
+}
+
+.category-tab {
+color: #353535;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f7f7f7;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  font-size: .95rem;
+  margin: .25em 0em;
+  transition: background 0.2s;
+}
+
+.category-tab.active {
+  background: #353535;
+  color: #fff;
+  border-color: #353535;
+}
+.category-tab.active:hover {
+  background: #353535;
+  color: #fff;
+  border-color: #353535;
+}
+
+.category-tab:hover {
+  background: #e0e0e0;
+}

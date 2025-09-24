@@ -1,21 +1,73 @@
+import { initBookDetails } from './bookDetails.js';
+
+// Initialize the book details functionality
+initBookDetails();
+
 const booksContainer = document.querySelector('.books');
 const paginationContainer = document.querySelector('.pagination');
+const tabsContainer = document.querySelector('.filters'); // where tabs will render
 
 let currentPage = 1;
-const limit = 10; // books per page
+let currentCategory = 'all';     // tracks selected tab
+const limit = 10;                // books per page
 
-// --- Helper to format date ---
-function daysBetween(date) {
-  const now = new Date();
-  const postedDate = new Date(date);
-  const diffTime = Math.abs(now - postedDate);
-  return diffTime / (1000 * 60 * 60 * 24); // days
+// --- Categories to display as tabs ---
+const categories = [
+  { key: 'all', label: 'All' },
+  { key: 'latest', label: 'Latest' },
+  { key: 'Devotionals', label: 'Devotionals' },
+  { key: 'Christian Living', label: 'Christian Living' },
+  { key: 'Bible Studies', label: 'Bible Studies' },
+  { key: 'Inspirational Fiction', label: 'Inspirational' },
+  { key: 'Memoirs and Testimonies', label: 'Testimonies' }
+];
+
+// --- Build category tabs dynamically ---
+function renderCategoryTabs() {
+  const tabsWrapper = document.createElement('div');
+  tabsWrapper.className = 'category-tabs';
+
+  categories.forEach(cat => {
+    const tab = document.createElement('button');
+    tab.className = 'category-tab';
+    tab.textContent = cat.label;
+    tab.dataset.category = cat.key;
+    if (cat.key === currentCategory) tab.classList.add('active');
+
+    tab.addEventListener('click', () => {
+      currentCategory = cat.key;
+      currentPage = 1;
+      // reset active states
+      tabsWrapper.querySelectorAll('.category-tab').forEach(btn => btn.classList.remove('active'));
+      tab.classList.add('active');
+      fetchBooks(currentPage, currentCategory);
+    });
+
+    tabsWrapper.appendChild(tab);
+  });
+
+  tabsContainer.appendChild(tabsWrapper);
 }
 
-// --- Fetch books from API with pagination ---
-async function fetchBooks(page = 1) {
+// --- Helper to compute days difference ---
+function daysBetween(date) {
+  const now = new Date();
+  const posted = new Date(date);
+  return Math.abs(now - posted) / (1000 * 60 * 60 * 24);
+}
+
+// --- Fetch books from API with pagination & category ---
+async function fetchBooks(page = 1, category = currentCategory) {
   try {
-    const res = await fetch(`http://localhost:5000/api/books?page=${page}&limit=${limit}`);
+    let url = `http://localhost:5000/api/books?page=${page}&limit=${limit}`;
+
+    if (category === 'latest') {
+      url += `&sort=latest`;
+    } else if (category !== 'all') {
+      url += `&category=${encodeURIComponent(category)}`;
+    }
+
+    const res = await fetch(url);
     const data = await res.json();
 
     if (!data.success) {
@@ -24,7 +76,7 @@ async function fetchBooks(page = 1) {
     }
 
     renderBooks(data.data);
-    renderPagination(data.totalPages, page);
+    renderPagination(data.totalPages || 1, page);
   } catch (err) {
     console.error('Error fetching books:', err);
     booksContainer.innerHTML = '<p>Error loading books.</p>';
@@ -40,50 +92,61 @@ function renderBooks(books) {
     const formattedPrice = isNaN(price) ? book.price : price.toFixed(2);
     const isNew = daysBetween(book.created_at) < 2 ? '<span class="badge">New</span>' : '';
 
-    const bookCard = document.createElement('div');
-    bookCard.className = 'book-card';
-    bookCard.innerHTML = `
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    card.innerHTML = `
       <div class="image-container">
         <img src="${book.image_url}" alt="${book.title}" class="book-image">
       </div>
       <hr/>
       <div class="book-info">
-        <h6>${isNew} Save 12%</h6>
+        <h6>${isNew} Save 16%</h6>
         <h3 title="${book.title}">${book.title}</h3>
         <p class="author">By ${book.author}</p>
         <p class="price">K${formattedPrice}</p>
-        <button onclick="viewBook(${book.id})">View Details</button>
+        <button class="view-details-btn" data-book-id="${book.id}">View Details</button>
       </div>
     `;
-    booksContainer.appendChild(bookCard);
+    booksContainer.appendChild(card);
   });
+
+  // Hook up detail buttons
+  document.querySelectorAll('.view-details-btn').forEach(btn =>
+    btn.addEventListener('click', e => viewBook(e.target.dataset.bookId))
+  );
 }
 
 // --- Render pagination controls ---
 function renderPagination(totalPages, activePage) {
   paginationContainer.innerHTML = '';
 
-  // Previous
   const prevBtn = document.createElement('button');
   prevBtn.textContent = 'Prev';
   prevBtn.disabled = activePage === 1;
-  prevBtn.onclick = () => fetchBooks(activePage - 1);
+  prevBtn.addEventListener('click', () => {
+    currentPage = activePage - 1;
+    fetchBooks(currentPage, currentCategory);
+  });
   paginationContainer.appendChild(prevBtn);
 
-  // Page numbers
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement('button');
     btn.textContent = i;
     if (i === activePage) btn.classList.add('active-page');
-    btn.onclick = () => fetchBooks(i);
+    btn.addEventListener('click', () => {
+      currentPage = i;
+      fetchBooks(currentPage, currentCategory);
+    });
     paginationContainer.appendChild(btn);
   }
 
-  // Next
   const nextBtn = document.createElement('button');
   nextBtn.textContent = 'Next';
   nextBtn.disabled = activePage === totalPages;
-  nextBtn.onclick = () => fetchBooks(activePage + 1);
+  nextBtn.addEventListener('click', () => {
+    currentPage = activePage + 1;
+    fetchBooks(currentPage, currentCategory);
+  });
   paginationContainer.appendChild(nextBtn);
 }
 
@@ -92,69 +155,8 @@ function viewBook(bookId) {
   window.location.href = `view-details.html?id=${bookId}`;
 }
 
-
-
 // --- Initialize ---
-document.addEventListener('DOMContentLoaded', () => fetchBooks(currentPage));
-
-
-
-    // Utility: get query parameter
-    function getQueryParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    // Fetch and display book details
-    async function loadBookDetails() {
-      const bookId = getQueryParam('id');
-      if (!bookId) {
-        document.querySelector('.book-details').innerHTML = '<p>Book ID is missing.</p>';
-        return;
-      }
-      const backToListing = document.getElementById('back-to-list');
-      backToListing.addEventListener('click', () =>{
-        window.location.href = `products.html`;
-      })
-
-      try {
-        const res = await fetch(`http://localhost:5000/api/books/${bookId}`);
-        if (!res.ok) throw new Error('Network response was not ok');
-        const data = await res.json();
-
-        if (!data.success || !data.data) {
-          document.querySelector('.book-details').innerHTML = '<p>Book not found.</p>';
-          return;
-        }
-
-        const book = data.data;
-        document.getElementById('book-title').textContent = book.title;
-        document.getElementById('book-author').textContent = book.author;
-        document.getElementById('book-price').textContent = Number(book.price).toFixed(2);
-        document.getElementById('book-description').textContent = book.description || 'No description available.';
-        document.getElementById('book-image').src = book.image_url;
-        document.getElementById('book-image').alt = book.title;
-      } catch (err) {
-        console.error('Error loading book details:', err);
-        document.querySelector('.book-details').innerHTML = '<p>Error loading book details.</p>';
-      }
-    }
-
-    // Initialize
-    document.getElementById('year').textContent = new Date().getFullYear();
-    document.addEventListener('DOMContentLoaded', loadBookDetails);
-
-
-
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      // Redirect to results page with the query
-      document.getElementById('search-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const query = document.getElementById('search-input').value.trim();
-        if (query) {
-          window.location.href = `search-results.html?q=${encodeURIComponent(query)}`;
-        }
-      });
-
-  })
+document.addEventListener('DOMContentLoaded', () => {
+  renderCategoryTabs();
+  fetchBooks(currentPage, currentCategory);
+});
