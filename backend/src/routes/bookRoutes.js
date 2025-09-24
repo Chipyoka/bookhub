@@ -97,6 +97,38 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+
+
+
+
+router.get('/best-sellers', async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT b.*
+      FROM books b
+      JOIN order_items oi ON b.id = oi.book_id
+      GROUP BY b.id
+      ORDER BY COUNT(oi.book_id) DESC
+      LIMIT 5;
+    `);
+
+    if (rows.length === 0) {
+      // fallback: random 5 books
+      const [randomRows] = await pool.query(`
+        SELECT * FROM books ORDER BY RAND() LIMIT 5;
+      `);
+      return res.json({ success: true, data: randomRows, fallback: true });
+    }
+
+    res.json({ success: true, data: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+
+
 /**
  * GET /books/:id
  * Fetch a single book by ID
@@ -127,6 +159,8 @@ router.get('/search', async (req, res) => {
   );
   res.json({ success: true, data: rows });
 });
+
+
 
 
 export default router;

@@ -1,18 +1,20 @@
+// main.js
 import { initBookDetails } from './bookDetails.js';
+import { renderBestSellers } from './bestSellers.js';
 
-
-// Initialize imports
+// --- Initialize Book Details if that page is loaded ---
 initBookDetails();
 
+// ---- Element references (may be null on some pages) ----
 const booksContainer = document.querySelector('.books');
 const paginationContainer = document.querySelector('.pagination');
-const tabsContainer = document.querySelector('.filters'); // where tabs will render
+const tabsContainer = document.querySelector('.filters');
 
 let currentPage = 1;
-let currentCategory = 'all';     // tracks selected tab
-const limit = 10;                // books per page
+let currentCategory = 'all';
+const limit = 10;
 
-// --- Categories to display as tabs ---
+// --- Category definitions ---
 const categories = [
   { key: 'all', label: 'All' },
   { key: 'latest', label: 'Latest' },
@@ -23,8 +25,10 @@ const categories = [
   { key: 'Memoirs and Testimonies', label: 'Testimonies' }
 ];
 
-// --- Build category tabs dynamically ---
+// ---- Category Tabs ----
 function renderCategoryTabs() {
+  if (!tabsContainer) return; // not on a page with filters
+
   const tabsWrapper = document.createElement('div');
   tabsWrapper.className = 'category-tabs';
 
@@ -38,7 +42,6 @@ function renderCategoryTabs() {
     tab.addEventListener('click', () => {
       currentCategory = cat.key;
       currentPage = 1;
-      // reset active states
       tabsWrapper.querySelectorAll('.category-tab').forEach(btn => btn.classList.remove('active'));
       tab.classList.add('active');
       fetchBooks(currentPage, currentCategory);
@@ -50,23 +53,21 @@ function renderCategoryTabs() {
   tabsContainer.appendChild(tabsWrapper);
 }
 
-// --- Helper to compute days difference ---
+// ---- Helper ----
 function daysBetween(date) {
   const now = new Date();
   const posted = new Date(date);
   return Math.abs(now - posted) / (1000 * 60 * 60 * 24);
 }
 
-// --- Fetch books from API with pagination & category ---
+// ---- Fetch & Render Books ----
 async function fetchBooks(page = 1, category = currentCategory) {
+  if (!booksContainer) return; // not a listing page
+
   try {
     let url = `http://localhost:5000/api/books?page=${page}&limit=${limit}`;
-
-    if (category === 'latest') {
-      url += `&sort=latest`;
-    } else if (category !== 'all') {
-      url += `&category=${encodeURIComponent(category)}`;
-    }
+    if (category === 'latest') url += '&sort=latest';
+    else if (category !== 'all') url += `&category=${encodeURIComponent(category)}`;
 
     const res = await fetch(url);
     const data = await res.json();
@@ -84,8 +85,8 @@ async function fetchBooks(page = 1, category = currentCategory) {
   }
 }
 
-// --- Render books as cards ---
 function renderBooks(books) {
+  if (!booksContainer) return;
   booksContainer.innerHTML = '';
 
   books.forEach(book => {
@@ -111,14 +112,13 @@ function renderBooks(books) {
     booksContainer.appendChild(card);
   });
 
-  // Hook up detail buttons
   document.querySelectorAll('.view-details-btn').forEach(btn =>
     btn.addEventListener('click', e => viewBook(e.target.dataset.bookId))
   );
 }
 
-// --- Render pagination controls ---
 function renderPagination(totalPages, activePage) {
+  if (!paginationContainer) return;
   paginationContainer.innerHTML = '';
 
   const prevBtn = document.createElement('button');
@@ -151,13 +151,20 @@ function renderPagination(totalPages, activePage) {
   paginationContainer.appendChild(nextBtn);
 }
 
-// --- Navigate to book details ---
 function viewBook(bookId) {
   window.location.href = `view-details.html?id=${bookId}`;
 }
 
-// --- Initialize ---
+// ---- Initialize only when elements exist ----
+function initMainPage() {
+  if (tabsContainer && booksContainer && paginationContainer) {
+    renderCategoryTabs();
+    fetchBooks(currentPage, currentCategory);
+  }
+}
+
+// ---- Always render best sellers ----
 document.addEventListener('DOMContentLoaded', () => {
-  renderCategoryTabs();
-  fetchBooks(currentPage, currentCategory);
+  initMainPage();
+  renderBestSellers(); // works on any page
 });

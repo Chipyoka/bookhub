@@ -5,6 +5,7 @@
     --primary-color: #F3B200;
     --primary-color-h: #e9af0d;
     --secondary-color: #1E4C54;
+    --secondary-color-h: #1c4147;
     --white: #fff;
     --gray: #808080;
     --white-bg: #f3f3f3;
@@ -35,7 +36,35 @@ a, a:visited, a:link {
     margin: 0 1rem;
     transition: all 0.3s ease;
 }
-
+.my-4{
+    margin:2em 0em;
+}
+.hyperlink{
+    color: var(--primary-color) !important;
+}
+.hyperlink:hover{
+    color: var(--primary-color-h);
+    text-decoration: underline;
+}
+main.best h2{
+    margin-top: 2em;
+    margin-bottom: 0em;
+    font-size: 2rem;
+    line-height: 1em;
+}
+main.best p{
+    margin-bottom: 2.5em;
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+.text-center{
+    text-align: center;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .active-nav{
     color: var(--primary-color);
     font-weight: 600;
@@ -156,9 +185,62 @@ header h1 {
 
 .best-selling-banner{
     margin-top: 1rem;
-    background: #f3f3f3;
-    padding: 8rem 0;
-    text-align: center;
+    background: var(--primary-color);
+    padding: 2.5rem 6em;
+    height: 60dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+}
+.best-selling-banner .info{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start;
+    width: 50%;
+    max-width: 50%;
+}
+.best-selling-banner .images{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 100%;
+    max-width: 50%;
+    background-color: var(--white);
+    border-radius: .5rem;
+    gap: 1em;
+    overflow: hidden;
+}
+.best-selling-banner .info h1{
+    font-size: 6rem;
+    color: var(--white-bg);
+    line-height: 1em;
+    margin: 0em;
+}
+.best-selling-banner .info p{
+    font-size: 1.5rem;
+    line-height: 1.5em;
+    margin: .5em 0em;
+    width: 80%;
+}
+.best-selling-banner .info button{
+    background: var(--white);
+    color: var(--primary-color);
+}
+.best-selling-banner .info button a{
+    color: var(--primary-color);
+}
+.best-selling-banner .info button:hover{
+    background: var(--white-bg);
+    color: var(--primary-color);
+}
+.best-selling-banner .info p{
+    font-size: 1.5rem;
+    line-height: 1.5em;
+    margin: .5em 0em;
+    width: 80%;
 }
 .shop-by-category{
     margin-top: 1rem;
@@ -486,4 +568,75 @@ color: #353535;
 
 .category-tab:hover {
   background: #e0e0e0;
+}
+
+
+/* Feedback Section */
+.feedback-section {
+  max-width: 700px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.feedback-section h2 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-intro {
+  text-align: center;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.feedback-form .form-group {
+  margin-bottom: 1.2rem;
+}
+
+.feedback-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+.feedback-form input,
+.feedback-form textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ccc;   /* thin border */
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.feedback-form textarea {
+  resize: vertical;
+}
+
+.btn-submit {
+  display: inline-block;
+  background: var(--secondary-color);
+  color: #fff;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn-submit:hover {
+    background: var(--secondary-color-h);
+}
+
+.status-msg {
+  margin-top: 1rem;
+  text-align: center;
+  color: #006400;
+}
+
+.required {
+  color: red;
 }

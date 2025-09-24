@@ -17,56 +17,101 @@
         </div>
     </div>
     <header>
-    <div class="flex">
-        <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
-        <nav>
-        <a class="active-nav" href="#">Home</a>
-        <a  href="products.html">Books</a>
-        </nav>
-    </div>
-
-    <!-- 🔍 Search Field -->
-    <div class="search-box">
-        <form id="search-form" class="search-form">
-        <input
-            type="text"
-            id="search-input"
-            placeholder="Search books..."
-            required
-        />
-        <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
-        </form>
-    </div>
-
-    <div class="cta">
-        <div>
-
-            <button>
-                <a href="checkout.html"><img src="./images/cart_.png" alt="cart" width="28px"></a>
-            </button>
-            <button>
-                <a href="checkout.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
-            </button>
+        <div class="flex">
+            <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
+            <nav>
+            <a class="active-nav" href="#">Home</a>
+            <a  href="products.html">Books</a>
+            </nav>
         </div>
-        <button>Register</button>
-    </div>
+
+        <!-- 🔍 Search Field -->
+        <div class="search-box">
+            <form id="search-form" class="search-form">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search books..."
+                required
+            />
+            <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
+            </form>
+        </div>
+
+        <div class="cta">
+            <div>
+
+                <button>
+                    <a href="checkout.html"><img src="./images/cart_.png" alt="cart" width="28px"></a>
+                </button>
+                <button>
+                    <a href="checkout.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
+                </button>
+            </div>
+            <button>Register</button>
+        </div>
     </header>
 
     <!-- banner for best selling books -->
     <section class="best-selling-banner">
-        <h2>Best Selling Banner</h2>
+        <div class="info">
+            <h1>Grab the best.</h1>
+            <p>Enjoy up to 50% discount  as you grow your faith through these amazing books.</p>
+            <button><a href="products.html">Shop Now !</a></button>
+        </div>
+        <div class="images">
+            <img src="https://res.cloudinary.com/dkn7ezavy/image/upload/v1758660257/C1-4_u5rswz.jpg" alt="Best Selling" width="250px">
+            <img src="https://res.cloudinary.com/dkn7ezavy/image/upload/v1758660293/C3-1_pgz5op.jpg" alt="Best Selling" width="250px">
+        </div>
     </section>
 
 
-    <main >
-        <h2>Most Popular</h2>
-        <section class="shop-by-category">
-            <p>List of all books by category will be displayed here.</p>
-        </section>
+    <main class="best">
+        <h2>Best Selling</h2>
+        <p class="text-center">Discover the words that are moving hearts worldwide</p>
+        <div class="container">
+            <section id="best-sellers" class="books">
+            </section>
+        </div>
+
+        <div class="container my-4"><a href="products.html" class="hyperlink">View more books</a></div>
     </main>
+
+
+
+    <!-- ===== Feedback Section ===== -->
+    <section class="feedback-section">
+    <h2>We Value Your Feedback</h2>
+    <p class="feedback-intro">
+        Share your thoughts or suggestions to help us improve your Bookhub experience.
+    </p>
+
+    <form id="feedbackForm" class="feedback-form">
+        <div class="form-group">
+        <label for="name">Name (optional)</label>
+        <input type="text" id="name" name="name" placeholder="Your name">
+        </div>
+
+        <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+        <label for="message">Your Feedback<span class="required">*</span></label>
+        <textarea id="message" name="message" rows="5" required
+            placeholder="Tell us what you think..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Send Feedback</button>
+        <p id="feedbackStatus" class="status-msg"></p>
+    </form>
+    </section>
+
 
     <footer>
         This will be the footer
     </footer>
+    <script type="module" src="./js/main.js"></script>
 </body>
 </html>
