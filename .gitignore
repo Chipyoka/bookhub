@@ -1,6 +1,7 @@
 # runtime files
 backend/node_modules/
 backend/src/config/seedAdmin.js
+.vscode
 
 # Build files
 
