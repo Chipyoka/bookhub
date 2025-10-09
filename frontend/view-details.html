@@ -41,9 +41,12 @@
     <div class="cta">
         <div>
 
-            <button>
-                <a href="checkout.html"><img src="./images/cart_.png" alt="cart" width="28px"></a>
-            </button>
+             <button class="cart-btn">
+                    <a href="checkout.html">
+                        <img src="./images/cart_.png" alt="cart" width="28px">
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </button>
             <button>
                 <a href="checkout.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
             </button>
@@ -65,7 +68,7 @@
         <p class="price"><strong>Price:</strong> K<span id="book-price"></span></p>
         <p class="description" id="book-description"></p>
         <button id="back-to-list" >Back to Listing</button>
-        <button id="add-to-cart">Add to cart</button>
+        <button id="add-to-cart-btn">Add to cart</button>
       </div>
     </div>
   </main>
@@ -78,5 +81,8 @@
 
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/search.js" ></script>
+    <script type="module" src="./js/cart.js"></script>
+     
+
 </body>
 </html>
