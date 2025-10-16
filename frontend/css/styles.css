@@ -95,6 +95,11 @@ button {
     border-radius: .25em;
     font-size: 1rem;
 }
+
+button a, button a:visited, button a:active{
+    color: white !important;
+    text-decoration: none;
+}
 button:hover {
     background-color: var(--primary-color-h);
 }
@@ -724,4 +729,178 @@ color: #353535;
 
 .required {
   color: red;
+}
+
+
+/* ===========================
+   LOGIN, REGISTER, & PROFILE PAGE STYLES
+   =========================== */
+
+.container-2 {
+    max-width: 900px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.container-3{
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    gap: 2em;
+}
+
+.profile-section {
+    width: 80%;
+    max-width: 80%;
+    padding: 0em 2em;
+}
+.profile-section .pname{
+    background: var(--white-bg);
+    padding: 1em;
+}
+.profile-section .pname p{
+    color: var(--gray);
+}
+.profile-section h2{
+    font-size: .85rem;
+}
+
+.profile-section #profileInfo h3{
+    font-size: 2.5rem;
+    line-height: 1em;
+    margin-bottom: 0em;
+    color: var(--secondary-color);
+}
+
+.change-password-section {
+    width: 40%;
+    max-width: 40%;
+    padding: 2em;
+    background: var(--white-bg);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+.change-password-section form button{
+    margin-top: 1em;
+}
+.change-password-section form label{
+    margin-top: .75em;
+}
+
+.orders-list{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    margin-top: 1em;
+    background: var(--white-bg);
+    padding: 1em 1.75em;
+
+}
+.order-card{
+    border: thin solid #ddd;
+    background: var(--white);
+    padding: 1em;
+    border-radius: .25rem;
+    width: 230px;
+   height: 340px;
+   transition: all 0.3s ease-in-out;
+    /* overflow-y: hidden; */
+}
+
+.order-card:hover{
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* subtle hover shadow */
+    border: thin solid var(--secondary-color);
+}
+
+.order-card p strong{
+    font-size: .75rem;
+}
+.order-card .order-id strong{
+    font-size: 1rem;
+}
+.order-card .order-id{
+    background: var(--white-bg);
+    padding: .5em;
+    margin: 0.5em 0em;
+}
+.order-card .order-date{
+    font-size: .85rem;
+    margin: 0em;
+}
+.order-card .order-payment{
+    font-size: .85rem;
+    margin: 0em;
+}
+.order-card .order-items{
+    font-size: .85rem;
+    margin: 0em;
+}
+
+.order-card .order-summary{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: .05em 0em;
+}
+
+.order-card ul{
+    padding: 0em;
+    border-radius: .25rem;
+    height: 30%;
+    overflow-y: auto;
+}
+.order-card ul li{
+    border-top: thin solid #e7e7e7;
+    padding: .5em;
+    font-size: .8rem;
+}
+
+.no-items{
+    color: var(--gray);
+    font-style: italic;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Chrome, Edge, Safari */
+.order-card::-webkit-scrollbar {
+  width: 4px;          /* scrollbar width */
+}
+
+.order-card::-webkit-scrollbar-track {
+  background: #f0f0f0; /* track color */
+  border-radius: 5px;
+}
+
+.order-card::-webkit-scrollbar-thumb {
+  background: #bdbdbd;     /* thumb color */
+  border-radius: 5px;
+}
+
+.order-card::-webkit-scrollbar-thumb:hover {
+  background: #c2c2c2;     /* thumb hover color */
+}
+
+/* Firefox */
+.order-card {
+  scrollbar-width: thin;
+  scrollbar-color: #b8b8b8 #f0f0f0; /* thumb track */
 }

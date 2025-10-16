@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookhub - Profile</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div class="top">
+        <div class="flex-2">
+            <div class="breathing-pulse"></div>
+            <p id="typewrite">The best of christianity books - all here !</p>
+            <div class="breathing-pulse"></div>
+        </div>
+    </div>
+    <header>
+        <div class="flex">
+            <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
+            <nav>
+            <a href="index.html">Home</a>
+            <a  href="all-books.html">Books</a>
+            </nav>
+        </div>
+
+        <!-- 🔍 Search Field -->
+        <div class="search-box">
+            <form id="search-form" class="search-form">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search books..."
+                required
+            />
+            <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
+            </form>
+        </div>
+
+        <div class="cta">
+            <div>
+
+                <button class="cart-btn">
+                        <a href="checkout.html">
+                            <img src="./images/cart_.png" alt="cart" width="28px">
+                            <span class="cart-count" id="cart-count">0</span>
+                        </a>
+                    </button>
+                <button>
+                    <a href="profile.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
+                </button>
+            </div>
+            <button> <a href="register.html">Register</a></button>
+        </div>
+    </header>
+
+    <!-- main content -->
+  <div class="container-2">
+      <h2>My Profile</h2>
+    <div class="container-3">
+        <div class="profile-section">
+            <div id="profileInfo">
+              <!-- User info will be populated here via auth.js -->
+            </div>
+        </div>
+        <div class="change-password-section">
+            <h3>Change Password</h3>
+            <form id="changePasswordForm">
+              <label for="oldPassword">Old Password</label>
+              <input type="password" id="oldPassword" name="oldPassword" required>
+        
+              <label for="newPassword">New Password</label>
+              <input type="password" id="newPassword" name="newPassword" required>
+        
+              <button type="submit">Update Password</button>
+            </form>
+        </div>
+    
+    </div>
+
+    <h3>My Orders</h3>
+    <div id="ordersList" class="orders-list"></div>
+
+    <button id="logoutBtn">Logout</button>
+    <div id="message"></div>
+  </div>
+
+  <script src="./js/auth.js"></script>
+  <script>
+    // Load profile data when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProfile();
+    });
+
+    // Change password
+    document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await changePassword();
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      logoutUser();
+    });
+  </script>
+</body>
+</html>

@@ -110,13 +110,35 @@ router.get("/profile", verifyToken, async (req, res) => {
 // ==================================
 router.get("/orders", verifyToken, async (req, res) => {
   try {
+    // Get orders for user
     const [orders] = await pool.query("SELECT * FROM orders WHERE user_id = ?", [req.user.id]);
-    res.json(orders);
+
+    const detailedOrders = await Promise.all(orders.map(async (order) => {
+      // Get items
+      const [items] = await pool.query(`
+        SELECT oi.quantity, oi.price, b.title AS book_name
+        FROM order_items oi
+        JOIN books b ON oi.book_id = b.id
+        WHERE oi.order_id = ?
+      `, [order.id]);
+
+      // Get payment info
+      const [payments] = await pool.query("SELECT method, amount, status FROM payments WHERE order_id = ?", [order.id]);
+
+      return {
+        ...order,
+        items,
+        payment: payments[0] || null
+      };
+    }));
+
+    res.json(detailedOrders);
   } catch (err) {
     console.error("Fetch orders error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // ==================================
 // CHANGE PASSWORD
