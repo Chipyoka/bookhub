@@ -7,7 +7,15 @@
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
-  <div class="container">
+     <div class="top">
+        <div class="flex-2">
+            <div class="breathing-pulse"></div>
+            <p id="typewrite">The best of christianity books - all here !</p>
+            <div class="breathing-pulse"></div>
+        </div>
+    </div>
+     <div class="container mt-2"><a href="index.html"><img src="./images/logo.png" alt="Bookhub" height="30px"></a></div>
+  <div class="auth-container">
     <h2>Login</h2>
     <form id="loginForm">
       <label for="email">Email</label>
@@ -18,8 +26,10 @@
 
       <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <a href="register.html">Register here</a></p>
+    <p>Don't have an account? <a href="register.html" class="hyperlink">Register here</a></p>
     <div id="message"></div>
+        <p class="notice">By logging in, you agree to our <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</p>
+
   </div>
 
   <script src="./js/auth.js"></script>

@@ -235,7 +235,7 @@ header h1 {
     color: var(--primary-color);
 }
 .best-selling-banner .info button a{
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 .best-selling-banner .info button:hover{
     background: var(--white-bg);
@@ -738,7 +738,7 @@ color: #353535;
 
 .container-2 {
     max-width: 900px;
-    margin: 4rem auto;
+    margin: 2.5rem auto;
     padding: 2rem;
     background: #fff;
     border: 1px solid #ddd;
@@ -751,7 +751,19 @@ color: #353535;
     align-items: start;
     gap: 2em;
 }
+.profile-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
 
+.logout-btn, .logout-btn a{
+    background: #ff5a5f;
+}
+.logout-btn:hover, .logout-btn a:hover{
+    background: #ed4c52;
+}
 .profile-section {
     width: 80%;
     max-width: 80%;
@@ -803,13 +815,16 @@ color: #353535;
     background: var(--white-bg);
     padding: 1em 1.75em;
 
+    max-height: 600px;
+    overflow-y: auto;
+
 }
 .order-card{
     border: thin solid #ddd;
     background: var(--white);
     padding: 1em;
     border-radius: .25rem;
-    width: 230px;
+    width: 220px;
    height: 340px;
    transition: all 0.3s ease-in-out;
     /* overflow-y: hidden; */
@@ -881,26 +896,58 @@ color: #353535;
 
 
 /* Chrome, Edge, Safari */
-.order-card::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 4px;          /* scrollbar width */
 }
 
-.order-card::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
   background: #f0f0f0; /* track color */
   border-radius: 5px;
 }
 
-.order-card::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   background: #bdbdbd;     /* thumb color */
   border-radius: 5px;
 }
 
-.order-card::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
   background: #c2c2c2;     /* thumb hover color */
 }
 
 /* Firefox */
-.order-card {
+* {
   scrollbar-width: thin;
   scrollbar-color: #b8b8b8 #f0f0f0; /* thumb track */
+}
+
+
+.auth-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: var(--white-bg);
+}
+.auth-container form button{
+    margin-top: 1.5em !important;
+}
+
+.mt-2{
+    margin-top: 2rem;
+}
+
+.notice{
+    font-size: .75rem;
+    color: var(--gray);
+    margin-top: 1.5em;
+
+}
+.notice a.hyperlink{
+        font-size: .75rem;
+        color: var(--gray);
+        margin-top: 0em !important;
+        padding: 0em !important;
+ 
 }

@@ -19,7 +19,7 @@
             <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
             <nav>
             <a href="index.html">Home</a>
-            <a  href="all-books.html">Books</a>
+            <a  href="products.html">Books</a>
             </nav>
         </div>
 
@@ -46,7 +46,7 @@
                         </a>
                     </button>
                 <button>
-                    <a href="profile.html"><img src="./images/profile_.png" alt="account" width="28px"></a>
+                    <a href="profile.html" title="My Profile"><img src="./images/profile_.png" alt="account" width="28px"></a>
                 </button>
             </div>
             <button> <a href="register.html">Register</a></button>
@@ -55,7 +55,10 @@
 
     <!-- main content -->
   <div class="container-2">
+    <div class="profile-header">
       <h2>My Profile</h2>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
     <div class="container-3">
         <div class="profile-section">
             <div id="profileInfo">
@@ -80,11 +83,12 @@
     <h3>My Orders</h3>
     <div id="ordersList" class="orders-list"></div>
 
-    <button id="logoutBtn">Logout</button>
+    
     <div id="message"></div>
   </div>
 
   <script src="./js/auth.js"></script>
+   <script type="module" src="./js/cart.js"></script>
   <script>
     // Load profile data when page loads
     document.addEventListener('DOMContentLoaded', async () => {
