@@ -47,6 +47,6 @@ export async function renderBestSellers() {
     );
   } catch (err) {
     console.error('Error fetching best sellers:', err);
-    container.innerHTML = '<p>Error loading best sellers.</p>';
+    container.innerHTML = '<p>Something went wrong.</p>';
   }
 }

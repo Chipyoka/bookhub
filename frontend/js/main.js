@@ -81,7 +81,7 @@ async function fetchBooks(page = 1, category = currentCategory) {
     renderPagination(data.totalPages || 1, page);
   } catch (err) {
     console.error('Error fetching books:', err);
-    booksContainer.innerHTML = '<p>Error loading books.</p>';
+    booksContainer.innerHTML = '<p>Something went wrong.</p>';
   }
 }
 
