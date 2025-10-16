@@ -1,11 +1,9 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import db from "../config/db.js";
+import { pool } from "../config/db.js"; // ✅ using exported pool
 
 const router = express.Router();
-
-// Secret key (store in .env in production)
 const JWT_SECRET = process.env.JWT_SECRET || "bookhub_secret_key";
 
 // ==================================
@@ -17,12 +15,12 @@ router.post("/register", async (req, res) => {
     if (!full_name || !email || !password)
       return res.status(400).json({ message: "Missing required fields" });
 
-    const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [existingUser] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
     if (existingUser.length > 0)
       return res.status(400).json({ message: "Email already registered" });
 
     const hash = await bcrypt.hash(password, 10);
-    await db.query(
+    await pool.query(
       "INSERT INTO users (full_name, email, password_hash, phone, address) VALUES (?, ?, ?, ?, ?)",
       [full_name, email, hash, phone || null, address || null]
     );
@@ -35,7 +33,7 @@ router.post("/register", async (req, res) => {
 });
 
 // ==================================
-// LOGIN USER (with JWT issuance)
+// LOGIN USER (JWT)
 // ==================================
 router.post("/login", async (req, res) => {
   try {
@@ -43,7 +41,7 @@ router.post("/login", async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ message: "Email and password required" });
 
-    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
     if (rows.length === 0)
       return res.status(401).json({ message: "Invalid credentials" });
 
@@ -51,12 +49,7 @@ router.post("/login", async (req, res) => {
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return res.status(401).json({ message: "Invalid credentials" });
 
-    // Generate JWT
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "7d" } // one week
-    );
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
       message: "Login successful",
@@ -76,13 +69,13 @@ router.post("/login", async (req, res) => {
 });
 
 // ==================================
-// JWT AUTH MIDDLEWARE
+// JWT MIDDLEWARE
 // ==================================
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.status(401).json({ message: "No token provided" });
 
-  const token = authHeader.split(" ")[1]; // Bearer <token>
+  const token = authHeader.split(" ")[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
@@ -93,14 +86,15 @@ function verifyToken(req, res, next) {
 }
 
 // ==================================
-// PROTECTED ROUTES
+// FETCH USER PROFILE
 // ==================================
 router.get("/profile", verifyToken, async (req, res) => {
   try {
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       "SELECT id, full_name, email, phone, address, created_at FROM users WHERE id = ?",
       [req.user.id]
     );
+
     if (rows.length === 0)
       return res.status(404).json({ message: "User not found" });
 
@@ -111,9 +105,12 @@ router.get("/profile", verifyToken, async (req, res) => {
   }
 });
 
+// ==================================
+// FETCH USER ORDERS
+// ==================================
 router.get("/orders", verifyToken, async (req, res) => {
   try {
-    const [orders] = await db.query("SELECT * FROM orders WHERE user_id = ?", [req.user.id]);
+    const [orders] = await pool.query("SELECT * FROM orders WHERE user_id = ?", [req.user.id]);
     res.json(orders);
   } catch (err) {
     console.error("Fetch orders error:", err);
@@ -121,17 +118,26 @@ router.get("/orders", verifyToken, async (req, res) => {
   }
 });
 
+// ==================================
+// CHANGE PASSWORD
+// ==================================
 router.put("/change-password", verifyToken, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const [rows] = await db.query("SELECT password_hash FROM users WHERE id = ?", [req.user.id]);
-    if (rows.length === 0) return res.status(404).json({ message: "User not found" });
+    if (!oldPassword || !newPassword)
+      return res.status(400).json({ message: "Old and new passwords required" });
+
+    const [rows] = await pool.query("SELECT password_hash FROM users WHERE id = ?", [req.user.id]);
+    if (rows.length === 0)
+      return res.status(404).json({ message: "User not found" });
 
     const match = await bcrypt.compare(oldPassword, rows[0].password_hash);
-    if (!match) return res.status(401).json({ message: "Incorrect old password" });
+    if (!match)
+      return res.status(401).json({ message: "Incorrect old password" });
 
     const newHash = await bcrypt.hash(newPassword, 10);
-    await db.query("UPDATE users SET password_hash = ? WHERE id = ?", [newHash, req.user.id]);
+    await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [newHash, req.user.id]);
+
     res.json({ message: "Password changed successfully" });
   } catch (err) {
     console.error("Change password error:", err);
@@ -139,13 +145,17 @@ router.put("/change-password", verifyToken, async (req, res) => {
   }
 });
 
+// ==================================
+// DELETE ORDER
+// ==================================
 router.delete("/orders/:orderId", verifyToken, async (req, res) => {
   try {
     const { orderId } = req.params;
-    const [result] = await db.query(
+    const [result] = await pool.query(
       "DELETE FROM orders WHERE id = ? AND user_id = ?",
       [orderId, req.user.id]
     );
+
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "Order not found or not yours" });
 
