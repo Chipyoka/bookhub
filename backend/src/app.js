@@ -3,6 +3,7 @@ import cors from 'cors'; // import cors
 import { pool } from './config/db.js';
 import bookRoutes from './routes/bookRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
 
@@ -22,6 +23,9 @@ app.use('/api/books', bookRoutes);
 
 // All user routes will now be under /api/users
 app.use('/api/users', userRoutes);
+
+// All payment routes will now be under /api/users
+app.use('/api/payments', userRoutes);
 
 // Health check route
 app.get('/health', async (req, res) => {
