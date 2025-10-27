@@ -1,156 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/styles.css">
-    <title>Bookhub | Cart & Checkout</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <title>Bookhub | Cart & Checkout</title>
 </head>
 <body>
-    <!-- Header -->
-
-    <!-- Header secction -->
-    <div class="top">
-        <div class="flex-2">
-            <div class="breathing-pulse"></div>
-            <p id="typewrite">The best of christianity books - all here !</p>
-            <div class="breathing-pulse"></div>
-        </div>
+  <!-- Header -->
+  <div class="top">
+    <div class="flex-2">
+      <div class="breathing-pulse"></div>
+      <p id="typewrite">The best of christianity books - all here !</p>
+      <div class="breathing-pulse"></div>
     </div>
-    <header>
-        <div class="flex">
-            <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
-            <nav>
-            <a  href="index.html">Home</a>
-            <a  href="products.html">Books</a>
-            </nav>
-        </div>
+  </div>
 
-        <!-- Search Field -->
-        <div class="search-box">
-            <form id="search-form" class="search-form">
-            <input
-                type="text"
-                id="search-input"
-                placeholder="Search books..."
-                required
-            />
-            <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
-            </form>
-        </div>
+  <header>
+    <div class="flex">
+      <div><img src="./images/logo.png" alt="Bookhub" height="36px" /></div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Books</a>
+      </nav>
+    </div>
 
-        <div class="cta">
-            <div>
+    <!-- Search Field -->
+    <div class="search-box">
+      <form id="search-form" class="search-form">
+        <input type="text" id="search-input" placeholder="Search books..." required />
+        <button title="search" type="submit">
+          <img src="./images/search.png" alt="search" width="44px" />
+        </button>
+      </form>
+    </div>
 
-                <button class="cart-btn">
-                    <a href="checkout.html">
-                        <img src="./images/cart_.png" alt="cart" width="28px">
-                        <span class="cart-count" id="cart-count">0</span>
-                    </a>
-                </button>
+    <div class="cta">
+      <div>
+        <button class="cart-btn">
+          <a href="checkout.html">
+            <img src="./images/cart_.png" alt="cart" width="28px" />
+            <span class="cart-count" id="cart-count">0</span>
+          </a>
+        </button>
 
-                <button>
-                    <a href="profile.html" title="My Profile"><img src="./images/profile_.png" alt="account" width="28px"></a>
-                </button>
-            </div>
-            <button> <a href="register.html">Register</a></button>
-        </div>
-    </header>
+        <button>
+          <a href="profile.html" title="My Profile">
+            <img src="./images/profile_.png" alt="account" width="28px" />
+          </a>
+        </button>
+      </div>
+      <button><a href="register.html">Register</a></button>
+    </div>
+  </header>
 
+  <!-- Cart Summary -->
+  <div class="cart-total-summary">
+    <div id="total-items">0</div>
+    <div id="cart-total-amount">K0.00</div>
+  </div>
+
+  <main class="cart-page">
     <!-- Cart Section -->
-    <div class="cart-total-summary">
-        <div id="total-items">0</div>
-        <div id="cart-total-amount">K0.00</div>
+    <section class="cart-items">
+      <h2>Your Cart</h2>
+      <div class="cart-list">
+        <div class="cart-item">
+          <p>Cart items will show here</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout Section -->
+    <section class="checkout-form">
+      <h2>Shipping Information</h2>
+      <form id="checkoutForm">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="address">Shipping Address</label>
+        <textarea id="address" name="address" rows="3" required></textarea>
+
+        <button type="submit" class="btn-checkout">Proceed to Payment</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="info">
+      <h1>Bookhub</h1>
+      <p>
+        An online Christian bookstore offering a carefully curated collection of books.
+        Browse our catalog, and build your collection with us. Your trusted source for
+        faith-based literature delivered with convenience and care.
+      </p>
+
+      <div class="addr">
+        <p class="cap">Contact information</p>
+        <p>
+          Kalewa Rd, Northrise<br />
+          Ndola - Zambia
+        </p>
+        <p><strong>Call: </strong>0972 691448 | 0976 553642</p>
+      </div>
+      <code>Powered by <strong>Stripe Payments</strong></code>
     </div>
-    <main class="cart-page">
-        <section class="cart-items">
-            <h2>Your Cart</h2>
-            <!-- Example cart list placeholder -->
-            <div class="cart-list">
-                <div class="cart-item">
-                 <p>Cart items will show here</p>
-                </div>
-                <!-- Additional items will appear here -->
-            </div>
-   
-        </section>
 
-        <!-- Checkout Section -->
-        <section class="checkout-form">
-            <h2>Checkout</h2>
-            <form action="#" method="post">
-                <!-- <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" > -->
+    <div class="q-links">
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="./products.html">Books</a></li>
+          <li><a href="./checkout.html">Cart</a></li>
+          <li><a href="#">About Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Refund Policy</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Terms and Conditions</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+  <div class="sign">
+    2025 &copy; All rights Reserved |
+    <strong>Designed and Developed by Kamila and Chipyoka</strong> as part of an assignment.
+  </div>
 
-                <!-- <label for="email">Email</label>
-                <input type="email" id="email" name="email" > -->
+  <!-- JS -->
+  <script type="module">
+    // Wait for DOM to load
+    document.addEventListener("DOMContentLoaded", () => {
+      // Render existing cart from localStorage
+      if (window.renderCart) renderCart();
 
-                <!-- <label for="address">Shipping Address</label>
-                <textarea id="address" name="address" rows="3"></textarea> -->
+      const form = document.getElementById("checkoutForm");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-                <label for="payment">Payment Method</label>
-                <select id="payment" name="payment">
-                    <option value="">--Select--</option>
-                    <option value="gpay">Google Pay</option>
-                    <option value="airtel">Airtel Mobile Money</option>
-                    <option value="mtn">MTN Mobile Money</option>
-                </select>
+        // Get cart
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if (cart.length === 0) {
+          alert("Your cart is empty!");
+          return;
+        }
 
-                <button type="submit" class="btn-checkout">Place Order</button>
-            </form>
-        </section>
-    </main>
+        // Calculate totals
+        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
-    <!-- Footer -->
-        <footer>
-        <!-- business info -->
-        <div class="info">
-            <h1>Bookhub</h1>
-            <p>
-                An online Christian bookstore offering a carefully 
-                curated collection of books. Browse our catalog, and build your 
-                collection with us. Your trusted source for faith-based literature 
-                 delivered with convenience and care.
-            </p>
-            
-            <div class="addr">
-                <p class="cap">Contact information</p>
-                <p>
-                    Kalewa Rd, Northrise
-                    <br>
-                    Ndola - Zambia
-                </p>
-                <p><strong>Call: </strong>0972 691448 | 0976 553642</p>
-            </div>
-            <code>Powered by <strong>Stripe Payments</strong></code>
-        </div>
+        // Shipping info
+        const shipping = {
+          name: document.getElementById("name").value.trim(),
+          address: document.getElementById("address").value.trim(),
+        };
 
-        <div class="q-links">
-            <div>
-                <h4>Company</h4>
-                <ul>
-                    <li> <a href="#">Home</a></li>
-                    <li> <a href="./products.html">Books</a></li>
-                    <li> <a href="./checkout.html">Cart</a></li>
-                    <li> <a href="#">About Us</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4>Legal</h4>
-                <ul>
-                    <li> <a href="#">Refund Policy</a></li>
-                    <li> <a href="#">Shipping</a></li>
-                    <li> <a href="#">Terms and Conditions</a></li>
-                    <li> <a href="#">Cookie Policy</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-    <div class="sign"> 2025 &copy; All rights Reserved | <strong>Designed and Developed by Kamila and Chipyoka</strong> as part of an assignment.</div>
-    
+        // Compile order object
+        const pendingOrder = {
+          shipping,
+          cart,
+          totalAmount,
+          totalItems,
+          createdAt: new Date().toISOString(),
+        };
 
-    <script type="module" src="./js/cart.js"></script>
-    
+        // Save for payments page
+        localStorage.setItem("pendingOrder", JSON.stringify(pendingOrder));
 
+        // Redirect to payments page
+        window.location.href = "payments.html";
+      });
+    });
+  </script>
+
+  <script type="module" src="./js/cart.js"></script>
 </body>
 </html>
