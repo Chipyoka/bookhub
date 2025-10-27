@@ -61,15 +61,6 @@
   </div>
 
   <main class="cart-page">
-    <!-- Cart Section -->
-    <section class="cart-items">
-      <h2>Your Cart</h2>
-      <div class="cart-list">
-        <div class="cart-item">
-          <p>Cart items will show here</p>
-        </div>
-      </div>
-    </section>
 
     <!-- Checkout Section -->
     <section class="checkout-form">
@@ -78,11 +69,31 @@
         <label for="name">Full Name</label>
         <input type="text" id="name" name="name" required />
 
+        <label for="phone">Active Phone Number</label>
+        <input type="text" id="phone" name="phone" required />
+
         <label for="address">Shipping Address</label>
         <textarea id="address" name="address" rows="3" required></textarea>
 
         <button type="submit" class="btn-checkout">Proceed to Payment</button>
       </form>
+
+      <div class="pays">
+        We accept:
+        <img src="./images/visa_.png" alt="Visa" width="40px">
+        <img src="./images/mastercard_.png" alt="Visa" width="42px">
+        <img src="./images/gpay_.png" alt="Visa" width="40px">
+      </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="cart-items">
+      <h2>Your Cart</h2>
+      <div class="cart-list">
+        <div class="cart-item">
+          <p>Cart items will show here</p>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -104,7 +115,7 @@
         </p>
         <p><strong>Call: </strong>0972 691448 | 0976 553642</p>
       </div>
-      <code>Powered by <strong>Stripe Payments</strong></code>
+      <code>Powered by <img src="./images/stripe.png" alt="Stripe" width="40px"></code>
     </div>
 
     <div class="q-links">
@@ -158,6 +169,7 @@
         // Shipping info
         const shipping = {
           name: document.getElementById("name").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
           address: document.getElementById("address").value.trim(),
         };
 
@@ -174,7 +186,7 @@
         localStorage.setItem("pendingOrder", JSON.stringify(pendingOrder));
 
         // Redirect to payments page
-        window.location.href = "payments.html";
+        window.location.href = "payment.html";
       });
     });
   </script>

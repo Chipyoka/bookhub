@@ -3,66 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bookhub | Search Results</title>
   <link rel="stylesheet" href="./css/styles.css" />
+  <title>Bookhub | Payment</title>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
-     <!-- Header secction -->
-    <div class="top">
-        <div class="flex-2">
-            <div class="breathing-pulse"></div>
-            <p id="typewrite">The best of christianity books - all here !</p>
-            <div class="breathing-pulse"></div>
-        </div>
+  <!-- Header -->
+  <header>
+    <div class="">
+      <div class="flex-2"><img src="./images/logo.png" alt="Bookhub" height="24px"> <span><strong>| Secure Checkout</strong></span></div>
+      <p class="breadcrumb">
+        <span><a href="index.html">Home</a></span>>
+        <span><a href="checkout.html">Checkout</a></span>>
+        <span><a href="payment.html">Payment</a></span>
+    </p>
     </div>
-    <header>
-    <div class="flex">
-        <div><img src="./images/logo.png" alt="Bookhub" height="36px"></div>
-        <nav>
-        <a href="index.html">Home</a>
-        <a href="products.html">Books</a>
-        </nav>
-    </div>
+  </header>
 
-    <!-- Search Field -->
-    <div class="search-box">
-        <form id="search-form" class="search-form">
-        <input
-            type="text"
-            id="search-input"
-            placeholder="Search books..."
-            required
-        />
-        <button title="search" type="submit"><img src="./images/search.png" alt="search" width="44px"></button>
-        </form>
-    </div>
+  <!-- Main Payment Section -->
+  <main class="payment-page">
+    <!-- Order Summary -->
+    <section class="order-summary">
+      <h3>Order Summary</h3>
+      <div id="order-details" class="order-details">
+        <!-- Populated by payment.js -->
+      </div>
+    </section>
 
-    <div class="cta">
-        <div>
+    <!-- Payment Method Section -->
+    <section class="payment-method">
+      <h3>Select Payment Method</h3>
 
-              <button class="cart-btn">
-                    <a href="checkout.html">
-                        <img src="./images/cart_.png" alt="cart" width="28px">
-                        <span class="cart-count" id="cart-count">0</span>
-                    </a>
-                </button>
-            <button>
-                <a href="profile.html" title="My Profile"><img src="./images/profile_.png" alt="account" width="28px"></a>
-            </button>
-        </div>
-        <button> <a href="register.html">Register</a></button>
-    </div>
-    </header>
+      <div class="pay-btns">
+          <button id="card-button" class="flex btn-card">
+              Pay with Card
+              <div ><img src="./images/card_.png" alt="Pay with card" width="40px"></div>
+          </button>
+          <button id="gpay-button" class="flex btn-card">
+              Pay with Google
+              <div ><img src="./images/gpay_.png" alt="Pay with card" width="40px"></div>
+          </button>
+      </div>
+     
+      <div id="payment-feedback"></div>
 
-  <main>
-    <h2>Search Results</h2>
-    <div class="container">
-        <div class="books" id="results-container">
-      <!-- Search results will appear here -->
-    </div>
-    </div>
+      <div class="p-stripe">
+        Powered by <img src="./images/stripe.png" alt="Stripe payments" width="40px">
+      </div>
+    </section>
   </main>
 
+  <!-- Footer -->
     <footer>
         <!-- business info -->
         <div class="info">
@@ -110,8 +101,7 @@
     <div class="sign"> 2025 &copy; All rights Reserved | <strong>Designed and Developed by Kamila and Chipyoka</strong> as part of an assignment.</div>
     
 
-<script type="module" src="./js/search.js" ></script>
-<script type="module" src="./js/cart.js"></script>
- 
+  <!-- External Payment JS -->
+  <script type="module" src="./js/payment.js"></script>
 </body>
 </html>
