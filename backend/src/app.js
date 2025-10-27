@@ -25,7 +25,7 @@ app.use('/api/books', bookRoutes);
 app.use('/api/users', userRoutes);
 
 // All payment routes will now be under /api/users
-app.use('/api/payments', userRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check route
 app.get('/health', async (req, res) => {
