@@ -10,13 +10,20 @@ const orderDetailsDiv = document.getElementById("order-details");
 const feedbackDiv = document.getElementById("payment-feedback");
 const cardButton = document.getElementById("card-button");
 const gpayButton = document.getElementById("gpay-button");
+const paymentPage = document.getElementById("payment-page");
 
 // ---------- Load Pending Order ----------
 const pendingOrder = JSON.parse(localStorage.getItem("pendingOrder"));
 
+paymentPage.style.display = "none";
+
 if (!pendingOrder) {
-  orderDetailsDiv.innerHTML = "<p>No pending order found. Please go back to checkout.</p>";
+  // orderDetailsDiv.innerHTML = "<p>No pending order found. Please go back to checkout.</p>";
+  alert("No Pending order found. Add products to cart")
+  // Redirect to checkout page
+  window.location.href = "checkout.html";
 } else {
+  paymentPage.style.display = "flex";
   const { cart, shipping, totalAmount } = pendingOrder;
 
   orderDetailsDiv.innerHTML = `
@@ -50,6 +57,7 @@ async function processPayment(method) {
 
   feedbackDiv.textContent = `Processing payment via ${method}...`;
   feedbackDiv.style.color = "blue";
+  feedbackDiv.style.borderColor = "blue";
 
   try {
     // ---------- Simulated Payment ----------
@@ -59,6 +67,7 @@ async function processPayment(method) {
     if (isSuccess) {
       feedbackDiv.textContent = "Payment successful! Thank you for your order.";
       feedbackDiv.style.color = "green";
+      feedbackDiv.style.borderColor = "green";
 
       // Save completed order
       const completedOrders = JSON.parse(localStorage.getItem("completedOrders") || "[]");
@@ -70,17 +79,19 @@ async function processPayment(method) {
       localStorage.setItem("completedOrders", JSON.stringify(completedOrders));
 
       // Clear cart and pending order
-      clearCart();
+      // clearCart();
       localStorage.removeItem("pendingOrder");
     } else {
       feedbackDiv.textContent = "Payment failed. Please try again.";
       feedbackDiv.style.color = "red";
+      feedbackDiv.style.borderColor = "red";
     }
 
   } catch (error) {
     console.error("Payment error:", error);
     feedbackDiv.textContent = "An error occurred during payment. Please try again.";
     feedbackDiv.style.color = "red";
+    feedbackDiv.style.borderColor = "red";
   }
 }
 

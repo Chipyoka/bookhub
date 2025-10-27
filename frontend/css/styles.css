@@ -287,7 +287,7 @@ main h2 {
 }
 
 .payment-page{
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: start;
     gap: 4em;
@@ -295,6 +295,15 @@ main h2 {
     background-color: #f8f8f8;
 }
 
+#payment-feedback{
+    padding: .5em 1em;
+    width: 90%;
+    max-width: 90%;
+    font-size: .85rem;
+    border: thin solid var(--white);
+    margin: 1em 0em;
+    border-radius: .25rem;
+}
 
 .payment-page section{
     background: var(--white);
