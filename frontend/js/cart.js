@@ -28,8 +28,8 @@ function addToCart(book) {
 
   saveCart(cart);
   alert(`${book.title} added to cart`);
-  renderCart(); // refresh UI if on checkout page
-  updateCartBadge(); // <--- update badge live
+  renderCart(); 
+  updateCartBadge(); 
 }
 
 // ========== Remove from Cart ==========

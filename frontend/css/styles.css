@@ -439,11 +439,78 @@ main h2 {
 footer{
     background: #353535;
     color: #fff;
-    text-align: center;
-    padding: 1rem;
+    padding: 1em 4em;
+    justify-content: space-between;
+    align-items: start;
+    display: flex;
+    margin-top: 1em;
+}
+footer .info{
+    max-width: 50%;
+}
+footer .info p{
+    font-size: .85rem;
+    font-weight: 300;
+}
+footer .info .addr{
+    margin: .25rem 0em;
+    padding-top: 1em;
+    border-top:thin solid var(--gray) ;
+    max-width: 50%;
+}
+footer .info .addr p{
+    font-size: .85rem;
+    font-weight: 500;
+    margin: .25rem 0em;
+}
+footer .info code{
+    width: fit-content;
+    padding: .35em 1em;
+    background: var(--gray);
+    margin: 1em 0em;
+    display: inline-block;
+    border-radius: .25rem;
+}
+footer .info .cap{
+    font-size: .65rem;
+    color: var(--gray);
 }
 
+footer .q-links{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10em;
+    align-items: start;
+}
+footer .q-links div ul{
+    margin: 0em;
+    padding: 0em;
+}
+footer .q-links div ul>li{
+    list-style: none;
+    margin: .5em 0em;
+    width:  fit-content;
+    border-bottom: thin solid #353535;
+    transition: all 0.3s ease-in-out;
+}
+footer .q-links div ul>li:hover{
+    border-bottom: thin solid var(--gray);
+}
+footer .q-links div ul>li a{
+    color: var(--white-bg);
+    margin: 0em;
+    padding: 0em;
+    font-size: .85rem;
+    font-weight: 300;
+}
 
+.sign{
+    text-align: center;
+    font-size: .75rem;
+    padding: 1em 0em;
+    background: #2a2a2a;
+    color: #a6a6a6;
+}
 .books{
     width: 82%;
     background: #f3f3f3;
@@ -747,7 +814,7 @@ color: #353535;
 
 .container-3{
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: start;
     gap: 2em;
 }
@@ -767,7 +834,7 @@ color: #353535;
 .profile-section {
     width: 80%;
     max-width: 80%;
-    padding: 0em 2em;
+    padding: 0em;
 }
 .profile-section .pname{
     background: var(--white-bg);
