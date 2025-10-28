@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful | Bookhub</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+
+  <main>
+    <div class="checkout-status verifying" id="status-container">
+      <h1>Verifying Payment...</h1>
+      <p>Please wait while we confirm your payment details.</p>
+      <p id="order-status">Checking your order status...</p>
+
+      <div id="order-details" style="display:none;" class="order-details">
+        <h3>Order Confirmed!</h3>
+        <p><strong>Order ID:</strong> <span id="orderId"></span></p>
+        <p><strong>Amount Paid:</strong> <span id="orderAmount"></span></p>
+        <p><strong>Order Status:</strong> <span id="orderStatus"></span></p>
+        <p><strong>Payment Status:</strong> <span id="paymentStatus"></span></p>
+      </div>
+
+      <div id="error-message" style="display:none;" class="order-details error">
+        <h3>Verification Issue</h3>
+        <p id="error-text"></p>
+      </div>
+
+      <div class="action-buttons" style="margin-top: 2rem;">
+        <button>
+            <a href="index.html">Continue Shopping</a>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Extract session_id from the URL
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    const statusContainer = document.getElementById('status-container');
+    const orderStatus = document.getElementById('order-status');
+    const orderDetails = document.getElementById('order-details');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    // Determine API base URL
+    // const API_BASE_URL = window.location.hostname === 'localhost' 
+    //   ? 'http://localhost:3000/api' 
+    //   : '/api';
+
+    const API_BASE_URL = 'http://localhost:5000/api' 
+
+    async function verifyPayment() {
+      if (!sessionId) {
+        showError('Missing session information. Please contact support if you completed payment.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/payments/verify-session?session_id=${sessionId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.session_payment_status === 'paid') {
+            // Payment successful
+            statusContainer.className = 'checkout-status success';
+            document.querySelector('h1').textContent = '🎉 Payment Successful!';
+            orderStatus.textContent = 'Your payment has been confirmed!';
+            
+            // Show order details
+            orderDetails.style.display = 'block';
+            document.getElementById('orderId').textContent = data.order_id || 'N/A';
+            document.getElementById('orderAmount').textContent = `K${data.amount}`;
+            document.getElementById('orderStatus').textContent = data.order_status || 'paid';
+            document.getElementById('paymentStatus').textContent = data.session_payment_status;
+
+            // Clear any pending order from localStorage since payment is complete
+            cleanupLocalStorage();
+
+          } else if (data.session_payment_status === 'unpaid') {
+            // Payment not completed
+            statusContainer.className = 'checkout-status error';
+            document.querySelector('h1').textContent = '❌ Payment Not Completed';
+            orderStatus.textContent = 'Your payment was not completed. Please try again.';
+            showError('Payment was not completed. Please return to checkout and try again.');
+          } else {
+            // Other payment status
+            orderStatus.textContent = `Payment status: ${data.session_payment_status}`;
+            showError(`Unexpected payment status: ${data.session_payment_status}. Please contact support.`);
+          }
+        } else {
+          showError(data.message || 'Payment verification failed. Please contact support.');
+        }
+      } catch (error) {
+        console.error('Verification error:', error);
+        showError('Could not verify payment. Please check your internet connection or contact support.');
+      }
+    }
+
+    function showError(message) {
+      errorText.textContent = message;
+      errorMessage.style.display = 'block';
+      statusContainer.className = 'checkout-status error';
+      document.querySelector('h1').textContent = '❌ Verification Failed';
+    }
+
+    function cleanupLocalStorage() {
+      // Remove pending order and session ID since payment is complete
+      localStorage.removeItem('pendingOrder');
+      localStorage.removeItem('currentSessionId');
+      
+      // Optionally clear cart if payment is successful
+      // localStorage.removeItem('cart');
+    }
+
+    // Start verification when page loads
+    verifyPayment();
+  </script>
+</body>
+</html>

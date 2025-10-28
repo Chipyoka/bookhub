@@ -209,6 +209,7 @@ async function loadOrders() {
 
       return `
         <div class="order-card">
+        <p class="order-status ${order.status === 'paid' ? 'g' : 'p'}"> ${order.status}</p>
           <p class="order-id"><strong>Order ID:</strong> ${order.id}</p>
           <p class="order-date"><strong> Date:</strong><br/> ${datePlaced}</p>
           <div class="order-summary"> 

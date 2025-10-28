@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Cancelled | Bookhub</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+
+  <main>
+    <div class="checkout-status cancel" id="status-container">
+      <h1>⚠️ Payment Cancelled</h1>
+      <p>Your payment was cancelled or did not complete successfully.</p>
+
+      <div id="session-info" style="display:none;" class="session-info">
+        <h3>Session Details</h3>
+        <p><strong>Status:</strong> <span id="sessionStatus"></span></p>
+        <p><strong>Amount:</strong> <span id="sessionAmount"></span></p>
+      </div>
+
+      <p id="cancel-message">Checking your payment session status...</p>
+
+      <div id="retry-options" style="display:none;" class="action-buttons">
+        <!-- <p>You can return to checkout and try again.</p> -->
+        <button>
+            <a href="checkout.html">Return to Checkout</a>
+        </button>
+        <a href="payment.html" class="hyperlink">Try Payment Again</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Extract session_id from the URL
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+
+    const statusContainer = document.getElementById('status-container');
+    const cancelMessage = document.getElementById('cancel-message');
+    const sessionInfo = document.getElementById('session-info');
+    const retryOptions = document.getElementById('retry-options');
+    const pendingOrderNote = document.getElementById('pending-order-note');
+
+    // Determine API base URL
+    // const API_BASE_URL = window.location.hostname === 'localhost' 
+    //   ? 'http://localhost:3000/api' 
+    //   : '/api';
+
+    const API_BASE_URL = 'http://localhost:5000/api' 
+
+    async function checkCancelledSession() {
+      if (!sessionId) {
+        cancelMessage.textContent = 'No session found. You can safely return to checkout and try again.';
+        showRetryOptions();
+        showPendingOrderNote();
+        return;
+      }
+
+      try {
+        // Use the check-session endpoint from your paymentRoutes.js
+        const response = await fetch(`${API_BASE_URL}/payments/check-session?session_id=${sessionId}`);
+        const data = await response.json();
+
+        if (data.success && data.exists) {
+          // Session exists - show details
+          statusContainer.className = 'checkout-status info-d';
+          cancelMessage.textContent = 'Your payment session was found but not completed.';
+          
+          // Show session details
+          sessionInfo.style.display = 'block';
+          document.getElementById('sessionStatus').textContent = data.session?.payment_status || 'cancelled';
+          document.getElementById('sessionAmount').textContent = data.session?.amount_total 
+            ? `K${(data.session.amount_total / 100).toFixed(2)}` 
+            : 'N/A';
+
+          // Check if we have a pending order in localStorage
+          const pendingOrder = JSON.parse(localStorage.getItem('pendingOrder'));
+          if (pendingOrder) {
+            cancelMessage.textContent = `Your order #${pendingOrder.sessionId ? 'was created' : 'is ready'} but payment was not completed.`;
+          }
+
+        } else {
+          // Session doesn't exist or check failed
+          cancelMessage.textContent = data.message || 'Session not found. You can safely create a new order.';
+        }
+
+      } catch (error) {
+        console.error('Session check error:', error);
+        cancelMessage.textContent = 'Unable to check session status. You can safely try again.';
+      } finally {
+        showRetryOptions();
+        showPendingOrderNote();
+        
+        // Clean up session ID but keep pending order for retry
+        localStorage.removeItem('currentSessionId');
+      }
+    }
+
+    function showRetryOptions() {
+      retryOptions.style.display = 'block';
+    }
+
+    function showPendingOrderNote() {
+      const pendingOrder = JSON.parse(localStorage.getItem('pendingOrder'));
+      const cart = JSON.parse(localStorage.getItem('cart'));
+      
+      if (pendingOrder || (cart && cart.length > 0)) {
+        pendingOrderNote.style.display = 'block';
+      }
+    }
+
+
+
+    // Start checking when page loads
+    checkCancelledSession();
+    addCancellationInfo();
+  </script>
+</body>
+</html>

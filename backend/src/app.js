@@ -1,14 +1,11 @@
 import express from 'express';
-import cors from 'cors'; // import cors
+import cors from 'cors';
 import { pool } from './config/db.js';
 import bookRoutes from './routes/bookRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
-
-// --- Middleware ---
-app.use(express.json());
 
 // --- CORS Setup ---
 app.use(cors({
@@ -17,14 +14,14 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// --- Middleware ---
+// IMPORTANT: Use raw body for webhook route, JSON for all others
+app.use('/api/payments/webhook', express.raw({type: 'application/json'}));
+app.use(express.json()); // JSON parsing for all other routes
+
 // --- Prefix Routes ---
-// All book routes will now be under /api/books
 app.use('/api/books', bookRoutes); 
-
-// All user routes will now be under /api/users
 app.use('/api/users', userRoutes);
-
-// All payment routes will now be under /api/users
 app.use('/api/payments', paymentRoutes);
 
 // Health check route

@@ -31,7 +31,7 @@ const ensureUser = (req, res, next) => {
 };
 
 /**
- * Helper: send order email
+ * Helper: send order email with proper error handling
  */
 const sendEmail = async ({ to, subject, html }) => {
   const mailOptions = {
@@ -40,7 +40,33 @@ const sendEmail = async ({ to, subject, html }) => {
     subject,
     html
   };
-  return transporter.sendMail(mailOptions);
+  
+  console.log(`Attempting to send email to: ${to}, subject: ${subject}`);
+  const result = await transporter.sendMail(mailOptions);
+  console.log(`Email sent successfully: ${result.messageId}`);
+  return result;
+};
+
+/**
+ * Enhanced email sending with robust error handling
+ */
+const sendEmailWithRetry = async ({ to, subject, html }, maxRetries = 2) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`Email attempt ${attempt}/${maxRetries} to: ${to}`);
+      const result = await sendEmail({ to, subject, html });
+      return result;
+    } catch (error) {
+      console.error(`Email attempt ${attempt} failed:`, error.message);
+      
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // Wait before retry (exponential backoff)
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
 };
 
 /**
@@ -50,7 +76,7 @@ const sendEmail = async ({ to, subject, html }) => {
  * Transactional: all DB inserts are in a transaction to avoid partial state.
  */
 router.post('/create-checkout-session', ensureUser, async (req, res) => {
-  const { cartItems = [], paymentMethod = 'stripe' } = req.body;
+  const { cartItems = [], paymentMethod = 'card' } = req.body;
 
   if (!cartItems || cartItems.length === 0) {
     return res.status(400).json({ success: false, message: 'Cart is empty' });
@@ -102,18 +128,18 @@ router.post('/create-checkout-session', ensureUser, async (req, res) => {
     // 5) create Stripe checkout session (outside DB transaction)
     const lineItems = cartItems.map(item => ({
       price_data: {
-        currency: process.env.STRIPE_CURRENCY || 'usd',
+        currency: 'zmw',
         product_data: { name: item.title || item.name || `Book #${item.id}` },
         unit_amount: Math.round(Number(item.price) * 100)
       },
       quantity: Number(item.quantity)
     }));
 
-    const successUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/success.html?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/cancel.html?session_id={CHECKOUT_SESSION_ID}`;
+    const successUrl = `${process.env.FRONTEND_URL || 'http://127.0.0.1:5500/frontend'}/success.html?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.FRONTEND_URL || 'http://127.0.0.1:5500/frontend'}/cancel.html?session_id={CHECKOUT_SESSION_ID}`;
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'google_pay'],
+      payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
       success_url: successUrl,
@@ -127,18 +153,30 @@ router.post('/create-checkout-session', ensureUser, async (req, res) => {
 
     // 6) send "Order placed (pending payment)" email to user
     try {
-      const itemsHtml = cartItems.map(i => `<li>${i.title || i.name || `Book ${i.id}`} — ${i.quantity} x $${Number(i.price).toFixed(2)}</li>`).join('');
+      const itemsHtml = cartItems.map(i => `<li>${i.title || i.name || `Book ${i.id}`} — ${i.quantity} x K${Number(i.price).toFixed(2)}</li>`).join('');
       const emailHtml = `
         <p>Hi ${req.user.full_name || ''},</p>
         <p>Thank you — we have created your order (ID: <strong>${orderId}</strong>). It is pending payment.</p>
         <p><strong>Order summary:</strong></p>
         <ul>${itemsHtml}</ul>
-        <p><strong>Total:</strong> $${Number(totalAmount).toFixed(2)}</p>
+        <p><strong>Total:</strong> K${Number(totalAmount).toFixed(2)}</p>
         <p>Please complete payment using the Checkout page. If successful, you will receive a confirmation email.</p>
       `;
-      await sendEmail({ to: req.user.email, subject: `Order #${orderId} placed — pending payment`, html: emailHtml });
+      
+      await sendEmailWithRetry({ 
+        to: req.user.email, 
+        subject: `Order #${orderId} placed — pending payment`, 
+        html: emailHtml 
+      });
+      
+      console.log(`Order placed email sent successfully to: ${req.user.email}`);
     } catch (emailErr) {
-      console.error('Failed to send order placed email:', emailErr?.message || emailErr);
+      console.error('❌ FAILED to send order placed email:', emailErr?.message || emailErr);
+      console.error('Email error details:', {
+        to: req.user.email,
+        subject: `Order #${orderId} placed — pending payment`,
+        error: emailErr
+      });
       // non-fatal — do not rollback
     }
 
@@ -183,6 +221,8 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       const paymentId = metadata.paymentId;
       const userId = metadata.userId;
 
+      console.log(`Processing webhook: checkout.session.completed for order ${orderId}`);
+
       // Use DB transaction to update payments/orders and log
       let connection;
       try {
@@ -220,20 +260,32 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
         // build email
         if (userRow && userRow.email) {
-          const itemsHtml = itemsRows.map(it => `<li>${it.title || 'Book'} — ${it.quantity} x $${Number(it.price).toFixed(2)}</li>`).join('');
+          const itemsHtml = itemsRows.map(it => `<li>${it.title || 'Book'} — ${it.quantity} x K${Number(it.price).toFixed(2)}</li>`).join('');
           const emailHtml = `
             <p>Hi ${userRow.full_name || ''},</p>
             <p>Your payment for order <strong>#${orderId}</strong> has been successfully processed.</p>
             <p><strong>Order details:</strong></p>
             <ul>${itemsHtml}</ul>
-            <p><strong>Total Paid:</strong> $${Number(orderRow.total_amount).toFixed(2)}</p>
+            <p><strong>Total Paid:</strong> K${Number(orderRow.total_amount).toFixed(2)}</p>
             <p>Thank you for shopping with us. We will notify you once your order ships.</p>
           `;
           try {
-            await sendEmail({ to: userRow.email, subject: `Order #${orderId} confirmed`, html: emailHtml });
+            await sendEmailWithRetry({ 
+              to: userRow.email, 
+              subject: `Order #${orderId} confirmed`, 
+              html: emailHtml 
+            });
+            console.log(`✅ Payment confirmation email sent to: ${userRow.email}`);
           } catch (emailErr) {
-            console.error('Failed to send confirmation email:', emailErr?.message || emailErr);
+            console.error('❌ FAILED to send confirmation email:', emailErr?.message || emailErr);
+            console.error('Confirmation email error details:', {
+              to: userRow.email,
+              orderId: orderId,
+              error: emailErr
+            });
           }
+        } else {
+          console.log(`No user found for ID: ${userId}, skipping confirmation email`);
         }
 
       } catch (dbErr) {
@@ -251,6 +303,8 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       const paymentId = metadata?.paymentId;
       const orderId = metadata?.orderId;
       const userId = metadata?.userId;
+
+      console.log(`Processing webhook: ${event.type} for order ${orderId}`);
 
       let connection;
       try {
@@ -284,9 +338,19 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
               <p>You can retry placing your order from your cart. If you need help, reply to this email.</p>
             `;
             try {
-              await sendEmail({ to: userRow.email, subject: `Order #${orderId} — Payment Failed`, html: emailHtml });
+              await sendEmailWithRetry({ 
+                to: userRow.email, 
+                subject: `Order #${orderId} — Payment Failed`, 
+                html: emailHtml 
+              });
+              console.log(`✅ Payment failed email sent to: ${userRow.email}`);
             } catch (emailErr) {
-              console.error('Failed to send payment failed email:', emailErr?.message || emailErr);
+              console.error('❌ FAILED to send payment failed email:', emailErr?.message || emailErr);
+              console.error('Failed payment email error details:', {
+                to: userRow.email,
+                orderId: orderId,
+                error: emailErr
+              });
             }
           }
         }
@@ -298,8 +362,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         if (connection) connection.release();
       }
     } else {
-      // For other event types you might want to handle or ignore
-      // console.log(`Unhandled event type ${event.type}`);
+      console.log(`Unhandled webhook event type: ${event.type}`);
     }
 
     // Acknowledge receipt of the event
@@ -393,10 +456,10 @@ router.post('/test-email', async (req, res) => {
         <p>Your order <strong>#TEST-123</strong> has been confirmed!</p>
         <p><strong>Order summary:</strong></p>
         <ul>
-          <li>Book Title 1 — 2 x $29.99</li>
-          <li>Book Title 2 — 1 x $19.99</li>
+          <li>Book Title 1 — 2 x K29.99</li>
+          <li>Book Title 2 — 1 x K19.99</li>
         </ul>
-        <p><strong>Total: $79.97</strong></p>
+        <p><strong>Total: K79.97</strong></p>
         <p>Thank you for your purchase!</p>
       `;
     } else if (testType === 'order-placed') {
@@ -406,9 +469,9 @@ router.post('/test-email', async (req, res) => {
         <p>Thank you — we have created your order (ID: <strong>TEST-456</strong>). It is pending payment.</p>
         <p><strong>Order summary:</strong></p>
         <ul>
-          <li>Test Book — 1 x $25.00</li>
+          <li>Test Book — 1 x K25.00</li>
         </ul>
-        <p><strong>Total: $25.00</strong></p>
+        <p><strong>Total: K25.00</strong></p>
         <p>Please complete payment using the Checkout page.</p>
       `;
     } else if (testType === 'payment-failed') {
@@ -465,6 +528,5 @@ router.post('/test-email', async (req, res) => {
     });
   }
 });
-
 
 export default router;

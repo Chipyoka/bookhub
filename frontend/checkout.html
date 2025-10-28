@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./css/styles.css" />
-  <title>Bookhub | Cart & Checkout</title>
+  <title>Cart & Checkout | Bookhub </title>
 </head>
 <body>
   <!-- Header -->
@@ -65,14 +65,18 @@
     <!-- Checkout Section -->
     <section class="checkout-form">
       <h2>Shipping Information</h2>
+      <div class="user-info-notice" id="userInfoNotice" style="display: none;">
+        <p><strong>We found your profile information!</strong> <br> Please review and update if needed before proceeding.</p>
+      </div>
+      
       <form id="checkoutForm">
-        <label for="name">Full Name</label>
+        <label for="name">Full Name *</label>
         <input type="text" id="name" name="name" required />
 
-        <label for="phone">Active Phone Number</label>
+        <label for="phone">Active Phone Number *</label>
         <input type="text" id="phone" name="phone" required />
 
-        <label for="address">Shipping Address</label>
+        <label for="address">Shipping Address *</label>
         <textarea id="address" name="address" rows="3" required></textarea>
 
         <button type="submit" class="btn-checkout">Proceed to Payment</button>
@@ -151,6 +155,9 @@
       // Render existing cart from localStorage
       if (window.renderCart) renderCart();
 
+      // Pre-fill form with user data if available
+      prefillUserData();
+
       const form = document.getElementById("checkoutForm");
       form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -162,16 +169,21 @@
           return;
         }
 
-        // Calculate totals
-        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-
-        // Shipping info
+        // Get shipping info from form
         const shipping = {
           name: document.getElementById("name").value.trim(),
           phone: document.getElementById("phone").value.trim(),
           address: document.getElementById("address").value.trim(),
         };
+
+        // Validate shipping information
+        if (!validateShippingInfo(shipping)) {
+          return;
+        }
+
+        // Calculate totals
+        const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
         // Compile order object
         const pendingOrder = {
@@ -189,6 +201,88 @@
         window.location.href = "payment.html";
       });
     });
+
+    // Pre-fill form with user data from localStorage
+    function prefillUserData() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        return;
+      }
+
+      // Show notice that we found user info
+      const notice = document.getElementById("userInfoNotice");
+      notice.style.display = 'block';
+
+      // Pre-fill form fields with user data if they exist and form fields are empty
+      const nameField = document.getElementById("name");
+      const phoneField = document.getElementById("phone");
+      const addressField = document.getElementById("address");
+
+      if (user.full_name && !nameField.value) {
+        nameField.value = user.full_name;
+      }
+      
+      if (user.phone && !phoneField.value) {
+        phoneField.value = user.phone;
+      }
+      
+      if (user.address && !addressField.value) {
+        addressField.value = user.address;
+      }
+    }
+
+    // Validate shipping information
+    function validateShippingInfo(shipping) {
+      const { name, phone, address } = shipping;
+
+      // Check if any field is empty
+      if (!name || !phone || !address) {
+        alert("Please fill in all shipping information fields.\n\nAll fields marked with * are required to process your order.");
+        return false;
+      }
+
+      // Validate phone number format (basic validation)
+      const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+      if (!phoneRegex.test(phone)) {
+        alert("Please enter a valid phone number.\n\nExample: 0972 123456 or +260972123456");
+        return false;
+      }
+
+      // Validate address length
+      if (address.length < 10) {
+        alert("Please provide a complete shipping address.\n\nYour address should include street name, area, and city for proper delivery.");
+        return false;
+      }
+
+      // Validate name (should have at least 2 words)
+      const nameParts = name.trim().split(/\s+/);
+      if (nameParts.length < 2) {
+        alert("Please provide your full name (first and last name).");
+        return false;
+      }
+
+      return true;
+    }
+
+    // Check user data completeness and warn if incomplete
+    function checkUserDataCompleteness() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        return;
+      }
+
+      const missingFields = [];
+      if (!user.full_name) missingFields.push('full name');
+      if (!user.phone) missingFields.push('phone number');
+      if (!user.address) missingFields.push('address');
+
+      if (missingFields.length > 0) {
+        console.log(`User profile missing: ${missingFields.join(', ')} - using checkout form instead`);
+      }
+    }
+
+    // Run user data completeness check on load
+    checkUserDataCompleteness();
   </script>
 
   <script type="module" src="./js/cart.js"></script>
